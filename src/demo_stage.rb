@@ -24,6 +24,8 @@ class DemoStage < Stage
       end
     end
 
+    sound_manager.play_music :rush_remix
+
     @stars = []
     20.times { @stars << Ftor.new(rand(viewport.width),rand(viewport.height)) }
   end
