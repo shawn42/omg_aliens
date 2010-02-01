@@ -1,6 +1,8 @@
 require 'stage'
 require 'ftor'
 class DemoStage < Stage
+  attr_reader :score
+
   def setup
     super
     @player = spawn :player, :x => 200, :y => 400
@@ -62,6 +64,11 @@ class DemoStage < Stage
         end
       end
       @aliens -= dead_aliens
+    end
+
+    if @aliens.empty?
+      puts "YOU WIN #{@score.score}"
+      fire :next_stage 
     end
 
   end
