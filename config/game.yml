@@ -1,0 +1,7 @@
+--- 
+:sound: true
+:auto_quit: :escape
+:fullscreen: false
+:screen_resolution: 
+- 600
+- 500
