@@ -1,0 +1,6 @@
+pkg
+*.swp
+*.log
+doc
+coverage
+.DS_Store

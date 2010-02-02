@@ -10,16 +10,16 @@ class Alien < Actor
   def setup
     @direction = RIGHT
     @initial_x = opts[:x]
-    @speed = 0.75
+    @speed = 5
   end
 
   def update(time)
-    @x += (@speed * @direction)
+    @x += (@speed * @direction)*0.01*time
   end
 
   def reverse_and_drop
     # increase speed
-    @speed += 0.4
+    @speed += 1
     # drop down
     @y += 25
     # reverse direction!!

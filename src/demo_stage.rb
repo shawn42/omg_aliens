@@ -5,6 +5,7 @@ class DemoStage < Stage
 
   def setup
     super
+
     @player = spawn :player, :x => 200, :y => 400
 
     @score = spawn :score, :x => 10, :y => 10
@@ -20,7 +21,7 @@ class DemoStage < Stage
     @aliens = []
     8.times do |i|
       3.times do |j|
-        @aliens << spawn(:alien, :x => 20+i*60, :y => 30+j*60)
+        @aliens << spawn(:alien, :x => 20+i*60, :y => 40+j*60)
       end
     end
 
@@ -48,6 +49,11 @@ class DemoStage < Stage
     end
   end
 
+  def laser_hits?(actor)
+    actor.x < @laser.x && actor.x+actor.image.width > @laser.x &&
+      actor.y < @laser.y && actor.y+actor.image.height > @laser.y
+  end
+
   def update(time)
     super
 
@@ -55,17 +61,33 @@ class DemoStage < Stage
     unless @laser.nil?
       dead_aliens = []
       @aliens.each do |alien|
-        if alien.x < @laser.x && alien.x+alien.image.width > @laser.x 
-          if alien.y < @laser.y && alien.y+alien.image.height > @laser.y
+        if laser_hits? alien
             alien.remove_self
             @laser.remove_self
             @score.score += 100
             dead_aliens << alien
             break
-          end
         end
       end
       @aliens -= dead_aliens
+    end
+
+    unless @ufo.nil?
+      if @laser && laser_hits?(@ufo)
+        @ufo.remove_self
+        @score.score += 1000
+      elsif @ufo.x > viewport.width
+        @ufo.remove_self
+      end
+    end
+
+    if @ufo.nil?
+      if rand(200) == 0
+        @ufo = spawn :ufo, :x => 100, :y => 20 
+        @ufo.when :remove_me do
+          @ufo = nil
+        end
+      end
     end
 
     if @aliens.empty?
