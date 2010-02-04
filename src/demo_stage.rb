@@ -1,7 +1,6 @@
 require 'stage'
 require 'ftor'
 class DemoStage < Stage
-  attr_reader :score
 
   def setup
     super
@@ -64,7 +63,7 @@ class DemoStage < Stage
         if laser_hits? alien
             alien.remove_self
             @laser.remove_self
-            @score.score += 100
+            @score += 100
             dead_aliens << alien
             break
         end
@@ -75,7 +74,7 @@ class DemoStage < Stage
     unless @ufo.nil?
       if @laser && laser_hits?(@ufo)
         @ufo.remove_self
-        @score.score += 1000
+        @score += 1000
       elsif @ufo.x > viewport.width
         @ufo.remove_self
       end
