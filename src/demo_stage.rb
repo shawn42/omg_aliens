@@ -10,18 +10,32 @@ class DemoStage < Stage
     @score = spawn :score, :x => 10, :y => 10
     spawn :logo, :x => 480, :y => 360
 
-    @player.when :shoot_laser do |laser|
-      @laser = laser
-      @laser.when :remove_me do 
-        @laser = nil
-      end
-    end
-
     @aliens = []
     8.times do |i|
       3.times do |j|
-        @aliens << spawn(:alien, :x => 20+i*60, :y => 40+j*60)
+        alien = spawn :alien, :x => 20+i*60, :y => 40+j*60
+        alien.when :remove_me do
+          if @aliens.size % 5 == 0
+            spawn :ufo, :x => 100, :y => 20 
+          end
+        end
+
+        @aliens << alien
       end
+    end
+
+    on_collision_of :ufo, :frickin_laser do |ufo,laser|
+      ufo.remove_self
+      laser.remove_self
+      @score += 1000
+      @ufo = nil
+    end
+
+    on_collision_of :alien, :frickin_laser do |alien,laser|
+      alien.remove_self
+      laser.remove_self
+      @score += 100
+      @aliens.delete alien
     end
 
     sound_manager.play_music :rush_remix
@@ -36,10 +50,13 @@ class DemoStage < Stage
     min_x = alien_x_values.min
     max_x = alien_x_values.max
     max_y = alien_y_values.max
+    dir = @aliens.first.direction
 
-    if max_x > viewport.width-20-@aliens.first.image.width
+    if max_x > viewport.width-20-@aliens.first.image.width and dir == Alien::RIGHT
+      puts "swarm hit the right"
       @aliens.each{|a|a.reverse_and_drop}
-    elsif min_x < 20
+    elsif min_x < 20 and dir == Alien::LEFT
+      puts "swarm hit the left"
       @aliens.each{|a|a.reverse_and_drop}
     end
 
@@ -48,46 +65,11 @@ class DemoStage < Stage
     end
   end
 
-  def laser_hits?(actor)
-    actor.x < @laser.x && actor.x+actor.image.width > @laser.x &&
-      actor.y < @laser.y && actor.y+actor.image.height > @laser.y
-  end
-
   def update(time)
     super
 
     rebuild_bounding_box
-    unless @laser.nil?
-      dead_aliens = []
-      @aliens.each do |alien|
-        if laser_hits? alien
-            alien.remove_self
-            @laser.remove_self
-            @score += 100
-            dead_aliens << alien
-            break
-        end
-      end
-      @aliens -= dead_aliens
-    end
-
-    unless @ufo.nil?
-      if @laser && laser_hits?(@ufo)
-        @ufo.remove_self
-        @score += 1000
-      elsif @ufo.x > viewport.width
-        @ufo.remove_self
-      end
-    end
-
-    if @ufo.nil?
-      if rand(200) == 0
-        @ufo = spawn :ufo, :x => 100, :y => 20 
-        @ufo.when :remove_me do
-          @ufo = nil
-        end
-      end
-    end
+    find_collisions
 
     if @aliens.empty?
       puts "YOU WIN #{@score.score}"
