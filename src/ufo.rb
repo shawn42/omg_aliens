@@ -1,7 +1,7 @@
 require 'actor'
 
 class Ufo < Actor
-  has_behavior :animated, :updatable, :collidable => {:shape => :circle, :radius => 10}
+  has_behavior :graphical, :updatable, :collidable => {:shape => :circle, :radius => 10}
   RIGHT = 1
   LEFT = -1
   

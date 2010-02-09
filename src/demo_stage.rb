@@ -15,8 +15,8 @@ class DemoStage < Stage
       3.times do |j|
         alien = spawn :alien, :x => 20+i*60, :y => 40+j*60
         alien.when :remove_me do
-          if @aliens.size % 5 == 0
-            spawn :ufo, :x => 100, :y => 20 
+          if (@aliens.size % 5) == 0
+            spawn :ufo, :x => 10, :y => 30 
           end
         end
 
@@ -25,6 +25,7 @@ class DemoStage < Stage
     end
 
     on_collision_of :ufo, :frickin_laser do |ufo,laser|
+      spawn :score_fade, :x => ufo.x, :y => ufo.y, :score => 1000, :ttl => 1000
       ufo.remove_self
       laser.remove_self
       @score += 1000
@@ -32,10 +33,11 @@ class DemoStage < Stage
     end
 
     on_collision_of :alien, :frickin_laser do |alien,laser|
+      spawn :score_fade, :x => alien.x, :y => alien.y, :score => 100, :ttl => 1000
+      @aliens.delete alien
       alien.remove_self
       laser.remove_self
       @score += 100
-      @aliens.delete alien
     end
 
     sound_manager.play_music :rush_remix
@@ -45,6 +47,8 @@ class DemoStage < Stage
   end
 
   def rebuild_bounding_box
+    return if @aliens.empty?
+
     alien_x_values = @aliens.collect{|a|a.x}
     alien_y_values = @aliens.collect{|a|a.y}
     min_x = alien_x_values.min
@@ -69,7 +73,6 @@ class DemoStage < Stage
     super
 
     rebuild_bounding_box
-    find_collisions
 
     if @aliens.empty?
       puts "YOU WIN #{@score.score}"
@@ -79,7 +82,7 @@ class DemoStage < Stage
   end
 
   def draw(target)
-    target.fill [25,25,25,255]
+    target.fill [0]*3
     for star in @stars
       target.draw_circle_s([star.x,star.y],1,[255,255,255,255])
     end
