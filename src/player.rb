@@ -3,7 +3,8 @@ require 'actor'
 class Player < Actor
   
   attr_accessor :move_left, :move_right, :can_shoot
-  has_behavior :graphical, :updatable, :audible
+  has_behavior :graphical, :updatable, :audible, 
+    :collidable => {:shape => :circle, :radius => 20}
 
   def setup
     @can_shoot = true
@@ -31,7 +32,15 @@ class Player < Actor
     velocity = 8
     @x += velocity if @move_right
     @x -= velocity if @move_left
-    @x %= stage.viewport.width
+
+    stage_left = 0
+    stage_right = stage.viewport.width-20 
+
+    if @x > stage_right
+      @x = stage_right 
+    elsif @x < stage_left
+      @x = stage_left 
+    end
   end
     
 end

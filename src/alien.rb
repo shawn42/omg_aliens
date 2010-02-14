@@ -11,7 +11,7 @@ class Alien < Actor
     @direction = RIGHT
     @initial_x = opts[:x]
     @speed = 2 * 0.01
-    @speed_up = 0.005
+    @speed_up = 0.004
   end
 
   def update(time)
@@ -19,11 +19,24 @@ class Alien < Actor
   end
 
   def reverse_and_drop
-    # increase speed
+    increase_speed
+    drop_down
+    reverse_direction
+  end
+
+  def increase_speed
     @speed += @speed_up
-    # drop down
+  end
+
+  def drop_down
     @y += 25
-    # reverse direction!!
+  end
+
+  def reverse_direction
     @direction *= -1
+  end
+
+  def shoot
+    spawn :alien_missile, :x => @x + (image.width/2), :y => @y
   end
 end
