@@ -120,7 +120,7 @@ class DemoStage < Stage
   end
 
   def you_lose
-      fire :prev_stage
+    fire :prev_stage
   end
 
   def update(time)
