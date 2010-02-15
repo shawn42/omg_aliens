@@ -78,7 +78,7 @@ class DemoStage < Stage
       you_lose
     end
 
-    add_timer :alien_shoot, (3-1)*1_000 do
+    add_timer :alien_shoot, (4-backstage[:wave])*1_000 do
       @aliens[rand(@aliens.size)].shoot unless @aliens.empty?
     end
 
