@@ -1,5 +1,4 @@
 require 'stage'
-require 'ftor'
 class WinStage < Stage
 
   def setup

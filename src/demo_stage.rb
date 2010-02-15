@@ -1,5 +1,5 @@
 require 'stage'
-require 'ftor'
+require 'rubygame/ftor'
 #class AlienSwarm
 ##  has_behavior :collidable => {:shape => :union_box}
 #  has_behavior :unioned_bounds
