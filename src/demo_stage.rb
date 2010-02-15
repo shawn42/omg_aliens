@@ -46,20 +46,25 @@ class DemoStage < Stage
     end
 
     on_unpause do
+      sound_manager.play_sound :pause
       sound_manager.play_sound :ufo_flying, :repeats => -1 if @ufo
+      @pause.remove_self
     end
 
     on_pause do
       sound_manager.stop_sound :ufo_flying if @ufo
+      sound_manager.play_sound :pause
+
+      @pause = spawn :label, :text => "pause", :x => 280, :y => 300, :size => 20
       input_manager.reg KeyPressed, :p do
         unpause
       end
     end
 
-    on_collision_of :alien_swarm, :right_side_of_viewport do |ufo,laser|
-    end
-    on_collision_of :alien_swarm, :right_side_of_world do |ufo,laser|
-    end
+#    on_collision_of :alien_swarm, :right_side_of_viewport do |ufo,laser|
+#    end
+#    on_collision_of :alien_swarm, :right_side_of_world do |ufo,laser|
+#    end
 
     on_collision_of :ufo, :frickin_laser do |ufo,laser|
       ufo_shot ufo, laser
