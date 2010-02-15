@@ -11,18 +11,14 @@ class DemoStage < Stage
     backstage[:wave] ||= 0
     backstage[:wave] += 1
 
-    @player = spawn :player, :x => 200, :y => 400
+    @player = spawn :player, :x => 200, :y => 550
 
     input_manager.reg KeyPressed, :w do
       @aliens = []
     end
 
-    input_manager.reg KeyPressed, :u do
-      spawn :ufo, :x => 10, :y => 30 
-    end
-
     @score = spawn :score, :x => 10, :y => 10
-    spawn :logo, :x => 480, :y => 360
+    spawn :logo, :x => 480, :y => 460
 
 #    alien_swarm = spawn :alien_swarm
 
@@ -45,6 +41,21 @@ class DemoStage < Stage
       end
     end
 
+    input_manager.reg KeyPressed, :p do
+      pause
+    end
+
+    on_unpause do
+      sound_manager.play_sound :ufo_flying, :repeats => -1 if @ufo
+    end
+
+    on_pause do
+      sound_manager.stop_sound :ufo_flying if @ufo
+      input_manager.reg KeyPressed, :p do
+        unpause
+      end
+    end
+
     on_collision_of :alien_swarm, :right_side_of_viewport do |ufo,laser|
     end
     on_collision_of :alien_swarm, :right_side_of_world do |ufo,laser|
@@ -62,14 +73,14 @@ class DemoStage < Stage
       you_lose
     end
 
-    add_timer :alien_shoot, 1_000 do
+    add_timer :alien_shoot, (3-1)*1_000 do
       @aliens[rand(@aliens.size)].shoot unless @aliens.empty?
     end
 
     add_timer :ufo_spawn, 9_000 do
       if @ufo.nil?
         if (@aliens.size > 7)
-          spawn :ufo, :x => 10, :y => 30 
+          @ufo = spawn :ufo, :x => 10, :y => 30 
         end
       end
     end

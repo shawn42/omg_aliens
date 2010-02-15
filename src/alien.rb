@@ -10,8 +10,8 @@ class Alien < Actor
   def setup
     @direction = RIGHT
     @initial_x = opts[:x]
-    @speed = 1.5 * 0.01
-    @speed_up = 0.004
+    @speed = 1 * 0.01
+    @speed_up = 0.001 * stage.backstage[:wave]
   end
 
   def update(time)
