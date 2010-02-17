@@ -136,7 +136,12 @@ class DemoStage < Stage
   end
 
   def you_lose
-    fire :prev_stage
+    sound_manager.play_sound :player_death
+    spawn :label, :text => "YOU LOSE!", :x => 150, :y => 100, :size => 90
+    @player.remove_self
+    add_timer :ufo_spawn, 1_500 do
+      fire :prev_stage
+    end
   end
 
   def update(time)
