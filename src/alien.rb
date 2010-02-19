@@ -2,12 +2,13 @@ require 'actor'
 
 class Alien < Actor
   attr_reader :direction
-  has_behavior :animated, :updatable, :collidable => {:shape => :circle, :radius => 20}
+  has_behavior :animated => {:frame_update_time => 900}, :collidable => {:shape => :circle, :radius => 20}
 
   RIGHT = 1
   LEFT = -1
 
   def setup
+    self.action = :march
     @direction = RIGHT
     @initial_x = opts[:x]
     @speed = 1 * 0.01
@@ -15,6 +16,7 @@ class Alien < Actor
   end
 
   def update(time)
+    super
     @x += @speed * @direction * time
   end
 
