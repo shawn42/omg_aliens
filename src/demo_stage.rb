@@ -1,9 +1,6 @@
 require 'stage'
 require 'rubygame/ftor'
-#class AlienSwarm
-##  has_behavior :collidable => {:shape => :union_box}
-#  has_behavior :unioned_bounds
-#end
+
 class DemoStage < Stage
 
   def setup
@@ -20,8 +17,6 @@ class DemoStage < Stage
     @score = spawn :score, :x => 10, :y => 10
     spawn :logo, :x => 480, :y => 460
 
-#    alien_swarm = spawn :alien_swarm
-
     @aliens = []
 
     columns = 8
@@ -37,7 +32,6 @@ class DemoStage < Stage
         end
 
         @aliens << alien
-#        alien_swarm << alien
       end
     end
 
@@ -52,7 +46,7 @@ class DemoStage < Stage
     end
 
     on_pause do
-      sound_manager.stop_sound :ufo_flying if @ufo
+      sound_manager.stop_sound :ufo_flying if @ufo and @ufo.alive?
       sound_manager.play_sound :pause
 
       @pause = spawn :label, :text => "pause", :x => 280, :y => 300, :size => 20
@@ -60,11 +54,6 @@ class DemoStage < Stage
         unpause
       end
     end
-
-#    on_collision_of :alien_swarm, :right_side_of_viewport do |ufo,laser|
-#    end
-#    on_collision_of :alien_swarm, :right_side_of_world do |ufo,laser|
-#    end
 
     on_collision_of :ufo, :frickin_laser do |ufo,laser|
       ufo_shot ufo, laser
@@ -160,7 +149,7 @@ class DemoStage < Stage
   end
 
   def draw(target)
-    target.fill [0]*3
+    target.fill [0,0,0]
     for star in @stars
       target.draw_circle_s([star.x,star.y],1,[255,255,255,255])
     end
