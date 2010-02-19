@@ -8,7 +8,6 @@ end
 
 class FrickinLaser < Actor
   has_behavior :updatable, :collidable => {:shape => :circle, :radius => 4}
-  attr_accessor :length
   
   def update(time_delta)
     velocity = 4*0.1*time_delta

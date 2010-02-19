@@ -29,7 +29,7 @@ class Player < Actor
   end
   
   def update(time_delta)
-    velocity = 8
+    velocity = 0.12 * time_delta
     @x += velocity if @move_right
     @x -= velocity if @move_left
 
