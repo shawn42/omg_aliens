@@ -25,7 +25,6 @@ class Player < Actor
     laser.when :remove_me do 
       @can_shoot = true
     end
-    fire :shoot_laser, laser
   end
   
   def update(time_delta)
