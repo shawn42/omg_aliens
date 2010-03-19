@@ -75,6 +75,9 @@ class DemoStage < Stage
       if @ufo.nil?
         if (@aliens.size > 7)
           @ufo = spawn :ufo, :x => 10, :y => 30 
+          @ufo.when :remove_me do
+            @ufo = nil
+          end
         end
       end
     end
