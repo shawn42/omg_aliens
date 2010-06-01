@@ -1,5 +1,5 @@
 --- 
-:sound: true
+:sound: false
 :auto_quit: :escape
 :fullscreen: false
 :screen_resolution: 

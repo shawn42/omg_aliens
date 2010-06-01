@@ -2,7 +2,9 @@ require 'actor'
 
 class Alien < Actor
   attr_reader :direction
-  has_behavior :animated => {:frame_update_time => 900}, :collidable => {:shape => :circle, :radius => 20}
+  has_behavior :animated => {:frame_update_time => 900}, 
+    :collidable => {:shape => :polygon,
+               :cw_local_points => [[4,4],[44,4],[44,44],[4,44]]}
 
   RIGHT = 1
   LEFT = -1

@@ -7,7 +7,9 @@ class AlienMissileView < ActorView
 end
 
 class AlienMissile < Actor
-  has_behavior :updatable, :collidable => {:shape => :circle, :radius => 5}
+#  has_behavior :updatable, :collidable => {:shape => :circle, :radius => 5}
+  has_behavior :updatable, :collidable => {:shape => :polygon,
+               :cw_local_points => [[0,0],[8,0],[4,10]]}
   
   def update(time_delta)
     velocity = 3*0.1*time_delta
