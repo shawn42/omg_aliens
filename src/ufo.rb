@@ -16,8 +16,8 @@ class Ufo < Actor
   end
 
   def update(time_delta)
-    @x += @speed*@dir*time_delta
-    remove_self if @x > stage.viewport.width
+    self.x += @speed*@dir*time_delta
+    remove_self if self.x > stage.viewport.width
   end
 
 end

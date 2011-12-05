@@ -3,9 +3,9 @@ $: << libdir
 confdir = File.dirname(__FILE__)+"/config"
 $: << confdir
 
-ENV["RUBYGAME_NOINIT"]="1"
 require 'environment'
-require 'gamebox/tasks/gamebox_tasks'
+$: << GAMEBOX_PATH
+load "tasks/gamebox_tasks.rake"
 STATS_DIRECTORIES = [
   %w(Source            src/), 
   %w(Config            config/), 

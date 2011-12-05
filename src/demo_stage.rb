@@ -1,18 +1,15 @@
-require 'stage'
-require 'rubygame/ftor'
-
 class DemoStage < Stage
 
   def setup
     super
-    stagehand(:spatial).cell_size = 500
-    stagehand(:spatial).auto_resize = true
+    stagehand(:spatial).cell_size = 100
+    # stagehand(:spatial).auto_resize = true
     backstage[:wave] ||= 0
     backstage[:wave] += 1
 
     @player = spawn :player, :x => 200, :y => 550
 
-    input_manager.reg KeyPressed, :w do
+    input_manager.reg :down, KbW do
       @aliens = []
     end
 
@@ -27,7 +24,7 @@ class DemoStage < Stage
     columns.times do |c|
       rows.times do |r|
         alien = spawn :alien, :x => 20+c*60, :y => 40+r*60
-        spawn :collidable_debugger, :collider => alien
+       spawn :collidable_debugger, :collider => alien
         alien.when :remove_me do
           if @aliens.size % 3 == 0
             @aliens.each{|a|a.increase_speed}
@@ -38,7 +35,7 @@ class DemoStage < Stage
       end
     end
 
-    input_manager.reg KeyPressed, :p do
+    input_manager.reg :down, KbP do
       pause
     end
 
@@ -53,7 +50,7 @@ class DemoStage < Stage
       sound_manager.play_sound :pause
 
       @pause = spawn :label, :text => "pause", :x => 280, :y => 300, :size => 20
-      input_manager.reg KeyPressed, :p do
+      input_manager.reg :down, KbP do
         unpause
       end
     end
@@ -87,21 +84,21 @@ class DemoStage < Stage
 
     sound_manager.play_music :rush_remix if backstage[:wave] == 1
 
-    @stars ||= []
-    20.times { @stars << Ftor.new(rand(viewport.width),rand(viewport.height)) }
+    # @stars ||= []
+    # 20.times { @stars << Ftor.new(rand(viewport.width),rand(viewport.height)) }
 
-    spawn :spatial_debugger, :y => 550
-    input_manager.reg KeyPressed, :k do
+    #spawn :spatial_debugger, :y => 550
+    input_manager.reg :down, KbK do
       stagehand(:spatial).cell_size += 5
     end
-    input_manager.reg KeyPressed, :j do
+    input_manager.reg :up, KbJ do
       stagehand(:spatial).cell_size -= 5
     end
   end
 
   def ufo_shot(ufo, laser)
     sound_manager.play_sound :ufo_death
-    spawn :score_fade, :x => ufo.x, :y => ufo.y, :score => 1000, :ttl => 1000
+    # spawn :score_fade, :x => ufo.x, :y => ufo.y, :score => 1000, :ttl => 1000
     ufo.remove_self
     laser.remove_self
     @score += 1000
@@ -109,7 +106,7 @@ class DemoStage < Stage
   end
 
   def alien_shot(alien, laser)
-    spawn :score_fade, :x => alien.x, :y => alien.y, :score => 100, :ttl => 1000
+    # spawn :score_fade, :x => alien.x, :y => alien.y, :score => 100, :ttl => 1000
     @aliens.delete alien
     alien.remove_self
     laser.remove_self
@@ -161,14 +158,6 @@ class DemoStage < Stage
         fire :restart_stage 
       end
     end
-  end
-
-  def draw(target)
-    target.fill [0,0,0]
-    for star in @stars
-      target.draw_circle_s([star.x,star.y],1,[255,255,255,255])
-    end
-    super
   end
 end
 

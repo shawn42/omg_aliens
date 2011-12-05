@@ -19,7 +19,7 @@ class Alien < Actor
 
   def update(time)
     super
-    @x += @speed * @direction * time
+    self.x += @speed * @direction * time
   end
 
   def reverse_and_drop
@@ -33,7 +33,7 @@ class Alien < Actor
   end
 
   def drop_down
-    @y += 25
+    self.y += 25
   end
 
   def reverse_direction!
@@ -41,6 +41,6 @@ class Alien < Actor
   end
 
   def shoot
-    spawn :alien_missile, :x => @x + (image.width/2), :y => @y
+    spawn :alien_missile, :x => self.x + (image.width/2), :y => self.y
   end
 end

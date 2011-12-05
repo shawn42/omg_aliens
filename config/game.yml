@@ -1,6 +1,6 @@
 --- 
-:sound: false
-:auto_quit: :escape
+:sound: true
+:auto_quit: KbEscape
 :fullscreen: false
 :screen_resolution: 
 - 600
