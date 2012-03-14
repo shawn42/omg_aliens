@@ -2,8 +2,6 @@ class DemoStage < Stage
 
   def setup
     super
-    stagehand(:spatial).cell_size = 100
-    # stagehand(:spatial).auto_resize = true
     backstage[:wave] ||= 0
     backstage[:wave] += 1
 
@@ -24,7 +22,6 @@ class DemoStage < Stage
     columns.times do |c|
       rows.times do |r|
         alien = spawn :alien, :x => 20+c*60, :y => 40+r*60
-       spawn :collidable_debugger, :collider => alien
         alien.when :remove_me do
           if @aliens.size % 3 == 0
             @aliens.each{|a|a.increase_speed}
@@ -87,13 +84,6 @@ class DemoStage < Stage
     # @stars ||= []
     # 20.times { @stars << Ftor.new(rand(viewport.width),rand(viewport.height)) }
 
-    #spawn :spatial_debugger, :y => 550
-    input_manager.reg :down, KbK do
-      stagehand(:spatial).cell_size += 5
-    end
-    input_manager.reg :up, KbJ do
-      stagehand(:spatial).cell_size -= 5
-    end
   end
 
   def ufo_shot(ufo, laser)
