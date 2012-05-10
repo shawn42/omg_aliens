@@ -39,12 +39,14 @@ class DemoStage < Stage
 
     on_unpause do
       sound_manager.play_sound :pause
+      sound_manager.play_music :rush_remix
       sound_manager.play_sound :ufo_flying, repeats: -1 if @ufo
       @pause.remove
     end
 
     on_pause do
       sound_manager.stop_sound :ufo_flying if @ufo and @ufo.alive?
+      sound_manager.pause_music :rush_remix
       sound_manager.play_sound :pause
 
       @pause = create_actor :label, text: "pause", x: 280, y: 300, size: 20
