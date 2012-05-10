@@ -3,7 +3,7 @@ define_behavior :projectile do
 
   requires :director
   setup do
-    actor.has_attributes direction: opts[:direction],
+    actor.has_attributes direction: opts[:direction].dup,
                          speed: opts[:speed]
 
     director.when :update do |time|

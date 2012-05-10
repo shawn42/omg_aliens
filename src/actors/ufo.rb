@@ -7,7 +7,7 @@ define_actor :ufo do
 
   behavior do
     setup do
-      actor.react_to :play_sound, :ufo_flying, repeat: -1
+      actor.react_to :play_sound, :ufo_flying, looping: true
       actor.when :remove_me do
         actor.react_to :stop_sound, :ufo_flying
       end

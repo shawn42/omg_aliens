@@ -1,6 +1,6 @@
 define_behavior :reversable_direction do
   setup do
-    actor.has_attributes direction: vec2(0,0)
+    actor.has_attributes direction: vec2(0,0).dup
     reacts_with :reverse_direction
   end
 

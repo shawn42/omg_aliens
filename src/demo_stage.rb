@@ -12,6 +12,7 @@ class DemoStage < Stage
     end
 
     @score = create_actor :score, x: 10, y: 10
+    create_actor :fps, x: 400, y: 10
     create_actor :logo, x: 480, y: 460
 
     @aliens = []
@@ -79,12 +80,12 @@ class DemoStage < Stage
       end
     end
 
-    # sound_manager.play_music :rush_remix if backstage[:wave] == 1
+    sound_manager.play_music :rush_remix if backstage[:wave] == 1
   end
 
   def ufo_shot(ufo, laser)
     sound_manager.play_sound :ufo_death
-    # create_actor :score_fade, :x => ufo.x, :y => ufo.y, :score => 1000, :ttl => 1000
+    create_actor :score_fade, x: ufo.x, y: ufo.y, score: 1000, ttl: 1000
     ufo.remove
     laser.remove
     @score.react_to :add, 1000
@@ -92,7 +93,7 @@ class DemoStage < Stage
   end
 
   def alien_shot(alien, laser)
-    # create_actor :score_fade, :x => alien.x, :y => alien.y, :score => 100, :ttl => 1000
+    create_actor :score_fade, x: alien.x, y: alien.y, score: 100, ttl: 1000
     @aliens.delete alien
     alien.remove
     laser.remove
