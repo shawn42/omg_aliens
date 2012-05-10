@@ -1,5 +1,5 @@
 == Welcome to Gamebox
-OMG Aliens is a sample app that will be created during my workshops on Gamebox. It currently requires the latest version of Gamebox from github. http://github.com/shawn42/gamebox
+Description of your game here.
 
 == Description of Contents
 

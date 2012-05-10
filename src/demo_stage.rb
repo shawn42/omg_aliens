@@ -5,14 +5,14 @@ class DemoStage < Stage
     backstage[:wave] ||= 0
     backstage[:wave] += 1
 
-    @player = spawn :player, :x => 200, :y => 550
+    @player = create_actor :player, x: 200, y: 550
 
     input_manager.reg :down, KbW do
       @aliens = []
     end
 
-    @score = spawn :score, :x => 10, :y => 10
-    spawn :logo, :x => 480, :y => 460
+    @score = create_actor :score, x: 10, y: 10
+    create_actor :logo, x: 480, y: 460
 
     @aliens = []
 
@@ -21,10 +21,10 @@ class DemoStage < Stage
 
     columns.times do |c|
       rows.times do |r|
-        alien = spawn :alien, :x => 20+c*60, :y => 40+r*60
+        alien = create_actor :alien, x: 20+c*60, y: 40+r*60
         alien.when :remove_me do
           if @aliens.size % 3 == 0
-            @aliens.each{|a|a.increase_speed}
+            @aliens.each{|a|a.react_to :increase_speed}
           end
         end
 
@@ -38,15 +38,15 @@ class DemoStage < Stage
 
     on_unpause do
       sound_manager.play_sound :pause
-      sound_manager.play_sound :ufo_flying, :repeats => -1 if @ufo
-      @pause.remove_self
+      sound_manager.play_sound :ufo_flying, repeats: -1 if @ufo
+      @pause.remove
     end
 
     on_pause do
       sound_manager.stop_sound :ufo_flying if @ufo and @ufo.alive?
       sound_manager.play_sound :pause
 
-      @pause = spawn :label, :text => "pause", :x => 280, :y => 300, :size => 20
+      @pause = create_actor :label, text: "pause", x: 280, y: 300, size: 20
       input_manager.reg :down, KbP do
         unpause
       end
@@ -65,13 +65,13 @@ class DemoStage < Stage
     end
 
     add_timer :alien_shoot, (4-backstage[:wave])*1_000 do
-      @aliens[rand(@aliens.size)].shoot unless @aliens.empty?
+      @aliens[rand(@aliens.size)].react_to :shoot unless @aliens.empty?
     end
 
-    add_timer :ufo_spawn, 9_000 do
+    add_timer :ufo_create_actor, 9_000 do
       if @ufo.nil?
         if (@aliens.size > 7)
-          @ufo = spawn :ufo, :x => 10, :y => 30 
+          @ufo = create_actor :ufo, x: 10, y: 30 
           @ufo.when :remove_me do
             @ufo = nil
           end
@@ -79,29 +79,25 @@ class DemoStage < Stage
       end
     end
 
-    sound_manager.play_music :rush_remix if backstage[:wave] == 1
-
-    # @stars ||= []
-    # 20.times { @stars << Ftor.new(rand(viewport.width),rand(viewport.height)) }
-
+    # sound_manager.play_music :rush_remix if backstage[:wave] == 1
   end
 
   def ufo_shot(ufo, laser)
     sound_manager.play_sound :ufo_death
-    # spawn :score_fade, :x => ufo.x, :y => ufo.y, :score => 1000, :ttl => 1000
-    ufo.remove_self
-    laser.remove_self
-    @score += 1000
+    # create_actor :score_fade, :x => ufo.x, :y => ufo.y, :score => 1000, :ttl => 1000
+    ufo.remove
+    laser.remove
+    @score.react_to :add, 1000
     @ufo = nil
   end
 
   def alien_shot(alien, laser)
-    # spawn :score_fade, :x => alien.x, :y => alien.y, :score => 100, :ttl => 1000
+    # create_actor :score_fade, :x => alien.x, :y => alien.y, :score => 100, :ttl => 1000
     @aliens.delete alien
-    alien.remove_self
-    laser.remove_self
+    alien.remove
+    laser.remove
     sound_manager.play_sound :death
-    @score += 100
+    @score.react_to :add, 100
   end
 
   def rebuild_bounding_box
@@ -112,12 +108,15 @@ class DemoStage < Stage
     min_x = alien_x_values.min
     max_x = alien_x_values.max
     max_y = alien_y_values.max+@aliens.first.image.height
-    dir = @aliens.first.direction
+    dir = @aliens.first.direction.x
 
-    if max_x > viewport.width-20-@aliens.first.image.width and dir == Alien::RIGHT
-      @aliens.each{|a|a.reverse_and_drop}
-    elsif min_x < 20 and dir == Alien::LEFT
-      @aliens.each{|a|a.reverse_and_drop}
+    if (max_x > viewport.width-20-@aliens.first.image.width and dir == 1) or
+       (min_x < 20 and dir == -1)
+      @aliens.each{|a|
+        a.react_to :increase_speed
+        a.react_to :drop_down
+        a.react_to :reverse_direction
+      }
     end
 
     if max_y > @player.y 
@@ -128,9 +127,9 @@ class DemoStage < Stage
   def you_lose
     if @player.alive?
       sound_manager.play_sound :player_death
-      spawn :label, :text => "YOU LOSE!", :x => 150, :y => 100, :size => 90
-      @player.remove_self
-      add_timer :ufo_spawn, 1_500 do
+      create_actor :label, :text => "YOU LOSE!", :x => 150, :y => 100, :size => 90
+      @player.remove
+      add_timer :you_lose, 1_500 do
         fire :prev_stage
       end
     end
@@ -141,13 +140,17 @@ class DemoStage < Stage
     rebuild_bounding_box
 
     if @aliens.empty?
-      @player.remove_self
+      @player.remove
       if backstage[:wave] == 3
         fire :next_stage 
       else
         fire :restart_stage 
       end
     end
+  end
+
+  def add_timer(*args, &blk)
+    timer_manager.add_timer *args, &blk
   end
 end
 
