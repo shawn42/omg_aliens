@@ -1,7 +1,9 @@
 define_actor :frickin_laser do
-  has_behavior projectile: {speed: 0.4, direction: vec2(0, -1)}
-  has_behavior collidable: {:shape => :circle, :radius => 4}
-  has_behaviors in_bounds_or_death: {bounds: [0,30,:viewport_width,:viewport_height]}
+  has_behaviors do
+    in_bounds_or_death bounds: [0,30,:viewport_width,:viewport_height]
+    projectile         speed: 0.4, direction: vec2(0, -1)
+    collidable         shape: :circle, :radius => 4
+  end
 
   view do
     draw do |target, x_offset, y_offset, z|

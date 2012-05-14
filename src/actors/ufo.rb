@@ -1,9 +1,12 @@
 define_actor :ufo do
-  has_behaviors :graphical, :audible
-  has_behaviors projectile: { speed: 0.12, direction: vec2(1, 0) }
-  has_behaviors collidable: {:shape => :circle, :radius => 10}
-  # TODO clean up viewport access?
-  has_behaviors in_bounds_or_death: {bounds: [0,0,:viewport_width,:viewport_height]}
+  has_behaviors do
+    graphical
+    audible
+    projectile         speed: 0.12, direction: vec2(1, 0)
+    collidable         shape: :circle, radius: 10
+    in_bounds_or_death bounds: [0,0,:viewport_width,:viewport_height]
+    # TODO clean up viewport access?
+  end
 
   behavior do
     setup do
