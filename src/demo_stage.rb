@@ -106,8 +106,8 @@ class DemoStage < Stage
   def rebuild_bounding_box
     return if @aliens.empty?
 
-    alien_x_values = @aliens.collect{|a|a.x}
-    alien_y_values = @aliens.collect{|a|a.y}
+    alien_x_values = @aliens.collect &:x
+    alien_y_values = @aliens.collect &:y
     min_x = alien_x_values.min
     max_x = alien_x_values.max
     max_y = alien_y_values.max+@aliens.first.image.height
@@ -130,7 +130,7 @@ class DemoStage < Stage
   def you_lose
     if @player.alive?
       sound_manager.play_sound :player_death
-      create_actor :label, :text => "YOU LOSE!", :x => 150, :y => 100, :size => 90
+      create_actor :label, text: "YOU LOSE!", x: 150, y: 100, size: 90
       @player.remove
       add_timer :you_lose, 1_500 do
         fire :prev_stage
