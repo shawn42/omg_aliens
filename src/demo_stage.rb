@@ -1,7 +1,6 @@
-class DemoStage < Stage
+define_stage :demo do
 
-  def setup
-    super
+  setup do
     backstage[:wave] ||= 0
     backstage[:wave] += 1
 
@@ -82,78 +81,79 @@ class DemoStage < Stage
       end
     end
 
+    director.when :update do
+      rebuild_bounding_box
+
+      if @aliens.empty?
+        @player.remove
+        if backstage[:wave] == 3
+          fire :next_stage 
+        else
+          fire :restart_stage 
+        end
+      end
+    end
     sound_manager.play_music :rush_remix if backstage[:wave] == 1
   end
 
-  def ufo_shot(ufo, laser)
-    sound_manager.play_sound :ufo_death
-    create_actor :score_fade, x: ufo.x, y: ufo.y, score: 1000, ttl: 1000
-    ufo.remove
-    laser.remove
-    @score.react_to :add, 1000
-    @ufo = nil
-  end
+  helpers do
 
-  def alien_shot(alien, laser)
-    create_actor :score_fade, x: alien.x, y: alien.y, score: 100, ttl: 1000
-    @aliens.delete alien
-    alien.remove
-    laser.remove
-    sound_manager.play_sound :death
-    @score.react_to :add, 100
-  end
-
-  def rebuild_bounding_box
-    return if @aliens.empty?
-
-    alien_x_values = @aliens.collect &:x
-    alien_y_values = @aliens.collect &:y
-    min_x = alien_x_values.min
-    max_x = alien_x_values.max
-    max_y = alien_y_values.max+@aliens.first.image.height
-    dir = @aliens.first.direction.x
-
-    if (max_x > viewport.width-20-@aliens.first.image.width and dir == 1) or
-       (min_x < 20 and dir == -1)
-      @aliens.each{|a|
-        a.react_to :increase_speed
-        a.react_to :drop_down
-        a.react_to :reverse_direction
-      }
+    def ufo_shot(ufo, laser)
+      sound_manager.play_sound :ufo_death
+      create_actor :score_fade, x: ufo.x, y: ufo.y, score: 1000, ttl: 1000
+      ufo.remove
+      laser.remove
+      @score.react_to :add, 1000
+      @ufo = nil
     end
 
-    if max_y > @player.y 
-      you_lose
+    def alien_shot(alien, laser)
+      create_actor :score_fade, x: alien.x, y: alien.y, score: 100, ttl: 1000
+      @aliens.delete alien
+      alien.remove
+      laser.remove
+      sound_manager.play_sound :death
+      @score.react_to :add, 100
     end
-  end
 
-  def you_lose
-    if @player.alive?
-      sound_manager.play_sound :player_death
-      create_actor :label, text: "YOU LOSE!", x: 150, y: 100, size: 90
-      @player.remove
-      add_timer :you_lose, 1_500 do
-        fire :prev_stage
+    def rebuild_bounding_box
+      return if @aliens.empty?
+
+      alien_x_values = @aliens.collect &:x
+      alien_y_values = @aliens.collect &:y
+      min_x = alien_x_values.min
+      max_x = alien_x_values.max
+      max_y = alien_y_values.max+@aliens.first.image.height
+      dir = @aliens.first.direction.x
+
+      if (max_x > viewport.width-20-@aliens.first.image.width and dir == 1) or
+         (min_x < 20 and dir == -1)
+        @aliens.each{|a|
+          a.react_to :increase_speed
+          a.react_to :drop_down
+          a.react_to :reverse_direction
+        }
+      end
+
+      if max_y > @player.y 
+        you_lose
       end
     end
-  end
 
-  def update(time)
-    super
-    rebuild_bounding_box
-
-    if @aliens.empty?
-      @player.remove
-      if backstage[:wave] == 3
-        fire :next_stage 
-      else
-        fire :restart_stage 
+    def you_lose
+      if @player.alive?
+        sound_manager.play_sound :player_death
+        create_actor :label, text: "YOU LOSE!", x: 150, y: 100, size: 90
+        @player.remove
+        add_timer :you_lose, 1_500 do
+          fire :prev_stage
+        end
       end
     end
-  end
 
-  def add_timer(*args, &blk)
-    timer_manager.add_timer *args, &blk
+    def add_timer(*args, &blk)
+      timer_manager.add_timer *args, &blk
+    end
   end
 end
 
