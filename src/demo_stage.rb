@@ -1,6 +1,6 @@
 define_stage :demo do
 
-  setup do
+  curtain_up do
     backstage[:wave] ||= 0
     backstage[:wave] += 1
 
