@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 gem 'require_all'
-gem "gamebox", '>= 0.4.0.rc10'
+gem "gamebox", '>= 0.4.0'
 gem "conject"
 gem "pry"
 
