@@ -145,8 +145,8 @@ define_stage :demo do
         sound_manager.play_sound :player_death
         create_actor :label, text: "YOU LOSE!", x: 150, y: 100, size: 90
         @player.remove
-        add_timer :you_lose, 1_500 do
-          fire :prev_stage
+        add_timer :you_lose, 3_000 do
+          fire :restart_stage
         end
       end
     end

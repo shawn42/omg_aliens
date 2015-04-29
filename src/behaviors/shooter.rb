@@ -12,7 +12,7 @@ define_behavior :shooter do
         actor.can_shoot = false
 
         actor.react_to :play_sound, :shoot
-        ammunition = stage.create_actor opts[:shoots], x: actor.x + (actor.image.width/2), y: actor.y
+        ammunition = stage.create_actor opts[:shoots], x: actor.x, y: actor.y
         ammunition.when :remove_me do 
           actor.can_shoot = true
         end

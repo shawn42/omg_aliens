@@ -1,5 +1,7 @@
 define_actor :alien do
-  has_attributes action: :march, view: :graphical_actor_view
+  has_attributes action: :march, view: :graphical_actor_view,
+                 anchor: :top_left
+
 
   has_behaviors do 
     animated          frame_update_time: 900

@@ -1,7 +1,7 @@
 define_actor :ufo do
   has_behaviors do
-    graphical
     audible
+    graphical          anchor: :top_left
     projectile         speed: 0.12, direction: vec2(1, 0)
     collidable         shape: :circle, radius: 10
     in_bounds_or_death bounds: [0,0,:viewport_width,:viewport_height]
